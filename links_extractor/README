@@ -1,0 +1,10 @@
+/* $Id: */
+
+-- SUMMARY --
+-- REQUIREMENTS --
+-- INSTALLATION --
+-- CONFIGURATION --
+-- NOTES --
+-- USAGE --
+-- CUSTOMIZATION --
+-- CONTACT --
