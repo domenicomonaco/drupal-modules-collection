@@ -80,6 +80,7 @@ function links_extractor_preprocess_node(&$variables) {
   //$variables['link_comment_add']=$variables['node']->linksextractor['comment_add'];
 
 ////////////////////////////////////////////////////////////////////////////////
+//////////// DEVELOPING SECTION ////////////////////////////////////////////////
 
   $vartoextract=_leconfig('vartoextract');
   
@@ -91,7 +92,8 @@ function links_extractor_preprocess_node(&$variables) {
         }
       }
   }
-
+  
+//////////// END DEVELOPING SECTION ////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
     
   if(isset($variables['node']->linksextractor['comment_add'])) {
