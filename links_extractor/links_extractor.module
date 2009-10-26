@@ -1,0 +1,120 @@
+<?php
+
+/* - Version = "6.x-1.0.1"
+ * - License = (Gplv2)+(Mit)
+ * - Description: has supported only $links variable on node-*.tpl.php
+ * - Author: Domenico Monaco / kiuz.4ever@gmail.com
+ * - $node->linksextractor
+ *
+ *
+ *
+ */
+
+function _leconfig($in) {
+ $output=array(); //output var
+ 
+ $mode=''; //Prototype,  don't have used
+ 
+  $vartoextract=
+  array(
+      array('comment_add', 'page', 'story'),
+      array('node_read_more', 'page', 'story'),
+      array('statistics_counter', 'page', 'story'),
+   );
+
+   $vartounset=
+   array(
+      array('comment_add', 'page', 'story'), 
+      array('statistics_counter', 'page', 'story')
+   );
+
+  //START PROCESSING
+    if($in=='vartoextract') {
+      $output=$vartoextract;
+    }
+
+    if($in=='vartounset') {
+      $output=$vartounset;
+    }
+
+    //END PROCESSING
+return $output;
+}
+
+function links_extractor_link_alter(&$links, &$node) {
+
+  // IN VAR to extract
+  $vartoextract=_leconfig('vartoextract');
+  // print_r($invarextr);
+  foreach($vartoextract as $var) {
+    $s=array_search($node->type,  $var);
+    if($s!=0) {
+      if($node->type==$var[$s]) {
+        if(isset($links[$var[0]])) {
+          $node->linksextractor[$var[0]]=$links[$var[0]];
+        }
+      }
+    }
+  }
+    
+  $vartounset=_leconfig('vartounset');
+  // print_r($invarextr);
+  foreach($vartounset as $va) {
+    $t=array_search($node->type,  $va);
+    if($t!=0) {
+      if($node->type==$va[$t]) {
+        if(isset($links[$va[0]])) {
+          unset($links[$va[0]]);
+        }
+      }
+    }
+  }
+  
+}
+
+
+
+function links_extractor_preprocess_node(&$variables) {
+  // 
+  $variables['linkextractor']=$variables['node']->linksextractor;
+  //$variables['link_comment_add']=$variables['node']->linksextractor['comment_add'];
+
+////////////////////////////////////////////////////////////////////////////////
+
+  $vartoextract=_leconfig('vartoextract');
+  
+  foreach($vartoextract as $ext){
+    $t=array_search($variables['node']->type,  $ext);
+      if($variables['node']->type==$ext[$t]) {
+        if(isset($variables['node']->linksextractor[$ext[0]])) {
+          $variables['link_' . $ext[0]]=le_link($variables['node']->linksextractor[$ext[0]]);
+        }
+      }
+  }
+
+////////////////////////////////////////////////////////////////////////////////
+    
+  if(isset($variables['node']->linksextractor['comment_add'])) {
+    $variables['link_comment_add']=le_link($variables['node']->linksextractor['comment_add']);
+  }
+
+  if(isset($variables['node']->linksextractor['node_read_more'])) {
+    $variables['link_node_read_more']=le_link($variables['node']->linksextractor['node_read_more']);
+  }
+
+  if(isset($variables['node']->linksextractor['statistics_counter'])) {
+    $count=explode(' ',$variables['node']->linksextractor['statistics_counter']['title']);
+    $variables['link_statistics_counter']=$count[0];
+  }
+
+}
+
+
+function le_link($le) {
+  if(!(isset($le['href']))) {
+  return $le['title'];
+  }
+
+  $s=l($le['title'], $le['href'], $le);
+return $s;
+}
