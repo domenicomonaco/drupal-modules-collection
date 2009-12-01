@@ -5,8 +5,8 @@
 -- Single mode Unsetting with simple administration page;
 
 - Extract variables of $links variable used in node.tpl.php and like files;
--- Bulk mode Unsetting with simple administration page;
--- Single mode Unsetting with simple administration page;
+-- Bulk mode Exytacting with simple administration page;
+-- Single mode Extracting with simple administration page;
 
 
 -- Feature Request List --
