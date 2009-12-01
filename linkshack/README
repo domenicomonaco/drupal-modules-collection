@@ -1,0 +1,40 @@
+/* $Id: */
+ 
+-- SUMMARY --
+-------------
+This is my first module developed for Drupal, in particulary is a simple "hack" 
+of $links variable used in node.tpl.php and node-NODETYPE.tpl.php.
+
+-- REQUIREMENTS --
+------------------
+"Links Hack" require only "node" core module.
+
+-- INSTALLATION --
+------------------
+Current Relase of "Links Hack" does not require *.install implementation ad its installation 
+is very simple and fast.
+1) Extract package in your modules directory
+2) with browser you can enable/install module in a Administration > Site Build > Modules
+3) find "Links Hack" module and mark his checkbox to enable
+4) Click on "save" and apply your modify
+
+-- CONFIGURATION --
+-------------------
+
+-- NOTES --
+-----------
+
+-- USAGE --
+-----------
+
+-- CUSTOMIZATION --
+-------------------
+
+-- CONTACT --
+-------------
+-------------
+Domenico Monaco
+kiuz.4ever@gmail.com
+http://www.kiuz.it
+http://www.pillsofbits.com
+

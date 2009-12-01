@@ -1,0 +1,170 @@
+<?php
+// $Id$
+
+/*
+ * - License = (Gplv2)+(Mit) 
+ * - Description: fetured only $links variable on node-*.tpl.php
+ *
+ *	$node->linksextractor
+ *
+ */
+
+
+
+function linkshack_overview(){
+$out=$out . t('<h3>Links Hack Overviews</h3><p>This is a simple module to hack $links variable used in node.tpl.php and all of node-*.tpl.php files.</p>');
+$out=$out . '<h3>Author</h3><p>Domenico Monaco / Kiuz / kiuz.4ever@gmail.com</p>';
+$out=$out . '<h3>GitHub Link</h3><p>' . l('http://github.com/kiuz/drupal-module-collection','Drupal Module') . '</p>';
+$out=$out . '<h3>Help to manage links variable</h3><p><ul><li>statistics_counter</li><li></li><li>node_read_more</li></ul></p>';
+return $out;
+}
+
+function linkshack_menu() {
+
+  $items['admin/settings/linkshack'] =array(
+    'title' => 'Links Hack',
+    'description' => t('Manage $links variable  used in node-*.tpl.php template files'),
+    'access arguments' => array('adminster site configuration'),
+    'page callback' => 'linkshack_overview',
+    'type' => MENU_NORMAL_ITEM
+  );
+  
+  $items['admin/settings/linkshack/unset'] =array(
+  'title' => t('Unset'),
+  'description' => t('Unsetting Links Variable'),
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('linkshack_admin_settings'),
+  'access arguments' => array('adminster site configuration'),
+  'type' => MENU_LOCAL_TASK,
+  'file' => 'linkshack.unset.admin.inc',
+    'weight' => 1
+  );
+  
+  $items['admin/settings/linkshack/extract'] =array(
+  'title' => t('Extract'),
+  'description' => t('Extracting Links Variable'),
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('linkshack_admin_settings'),
+  'access arguments' => array('adminster site configuration'),
+  'type' => MENU_LOCAL_TASK,
+  'file' => 'linkshack.extract.admin.inc',
+    'weight' => 2
+  );
+  
+  
+  $items['admin/settings/linkshack/overview'] =array(
+    'title' => t('Overview LinksHack'),
+    'access arguments' => array('adminster site configuration'),
+    'page callback' => 'linkshack_overview',
+    'access arguments' => array('adminster site configuration'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0
+  );
+
+return $items;
+}
+
+function _leconfig($ask,$act,$cnode) {
+$output=array(); //variable to output
+
+//  $nf='linkshack_unset_bulkmode';
+      
+    if($ask=='mode'){
+      $ifbulk=variable_get('linkshack_' . $act . '_bulkmode','');
+      
+      if($ifbulk[$cnode]=='0'){$modeout='single';}
+      if($ifbulk[$cnode]!='0'){$modeout='bulk';}
+      
+    $output=$modeout;
+    }
+    
+    if($ask=='singlemode'){
+      //print 'linkshack_' . $act . '_' . $ask . '_' . $cnode . '<br />';
+      $ifbulk=explode(',',variable_get('linkshack_' . $act . '_' . $ask . '_' . $cnode,''));
+      $output=$ifbulk;
+    }
+return $output;
+}
+
+function linkshack_link_alter(&$links, &$node) {
+  // <EXTRACTING>
+  
+  $modextract=_leconfig('mode','extract',$node->type); // Single or Bulk for Extracting
+  //print_r($modextract); //debug
+  if($modextract=='bulk'){ // if mode BULk
+  
+  $svarextract=array_keys($links);
+  //print_r($svarextract); //debug
+     foreach($svarextract as $exsvar){
+      $node->linkshack['extvar'][$exsvar]=$links[$exsvar];
+      // print_r($node->linkshack['extvar'][$exsvar]);//debug
+     }  
+  }
+  if($modextract='single'){ // if mode single
+  $svarextract=_leconfig('singlemode','extract',$node->type);
+  //print_r($svarextract); //debug
+    foreach($svarextract as $exsvar){
+      if(isset($links[$exsvar])){
+        $node->linkshack['extvar'][$exsvar]=$links[$exsvar];
+      }
+    }
+    
+  // print_r($node->linkhackextract); //Debug
+  }
+  // </EXTRACTING>
+
+
+  // <UNSETTING>
+  $modeunest=_leconfig('mode','unset',$node->type); // Single or Bulk
+ // print_r($modeunest);  print '<br />';
+ // print_r($node->type);  print '<br />';
+ // print_r($nliu=array_keys($links));  print '<br />';
+ // print '<br />';  print '<br />';  print '<br />';
+      
+      if($modeunest=='bulk'){ // if mode BULk 
+        $nliu=array_keys($links); // Extract key of Links
+         foreach($nliu as $unvar){ //looping on all of Variables indexed with previous keyss
+           unset($links[$unvar]); // unset indexed keys
+         }
+      }
+      if($modeunest=='single'){ // if mode single
+      $svarunset=_leconfig('singlemode','unset',$node->type);
+        foreach($svarunset as $svar){
+          unset($links[$svar]);
+        }
+      }
+ 
+  // <UNSETTING>
+ //print_r($node->linkhackextract); //Debug
+}
+
+
+function linkshack_preprocess_node(&$variables) {
+
+  // check size of variable. If is >= 1 is an Array
+  if(($chks=sizeof($variables['linkshack']['extvar'])) >= 1){
+    //if is an array we can use rhis function - array_keys - to extract key
+    $keys=array_keys($variables['linkshack']['extvar']);
+      //loop to process and creato new variable
+      foreach($keys as $key){
+        //make new variable with standard pattern name
+        $variables['links_' . $key]=_htmproc($variables['linkshack']['extvar'][$key]);
+        //unset variable, is not essencial but clear the nodeObject
+        unset($variables['linkshack']['extvar'][$key]);
+        //print_r($variables['links_' . $key]); //debug
+      }
+  }
+
+return $variables;
+}
+
+function _htmproc($inh){
+  //check if is a link
+  if(!(isset($inh['href']))) {
+    //is not link print only title text
+    return $inh['title'];
+  }
+
+  $output=l($inh['title'], $inh['href'], $inh);
+  return $output;
+}
