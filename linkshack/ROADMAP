@@ -1,0 +1,19 @@
+-- Current Feature --
+---------------------
+- Unsetting variables of $links variable used in node.tpl.php and like files;
+-- Bulk mode Unsetting with simple administration page;
+-- Single mode Unsetting with simple administration page;
+
+- Extract variables of $links variable used in node.tpl.php and like files;
+-- Bulk mode Unsetting with simple administration page;
+-- Single mode Unsetting with simple administration page;
+
+
+-- Feature Request List --
+--------------------------
+- Develope Mode where the module teach you variable name;
+- Unsetting / extracting based on Path;
+- Unsetting / extracting based on user roles;
+- Interactive form to modify some variable;
+- Interactive form to compose new variables;
+- Interactive form to add custom variable;
