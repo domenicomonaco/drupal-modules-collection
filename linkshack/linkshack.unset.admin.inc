@@ -8,7 +8,7 @@
  */
  
 
-function linkshack_admin_settings(){
+function linkshack_admin_settings() {
 
 $options = node_get_types('names');
 
@@ -23,13 +23,13 @@ $options = node_get_types('names');
 
   );
   
-  $optionst=array_keys($options);
+  $optionst = array_keys($options);
   $nfg='linkshack_unset_singlemode';
-  foreach($optionst as $ntypes){
-    $form[$nfg . '_' . $ntypes]= array(
+  foreach ($optionst as $ntypes) {
+    $form[$nfg . '_' . $ntypes] = array(
       '#type' => 'textarea',
       '#title' => t($ntypes . ' <em>UNSET</em> Single varibles'),
-      '#default_value' => variable_get($nfg . '_' . $ntypes,'' ), 
+      '#default_value' => variable_get($nfg . '_' . $ntypes, '' ), 
       '#size' => '90',
       '#disabled' => FALSE
       );
